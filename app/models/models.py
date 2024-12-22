@@ -39,4 +39,14 @@ class ElasticApp(BaseSettings):
     es_index: _ESIndexConfig = _ESIndexConfig()
 
 
+class ElasticSeachRequest(BaseModel):
+    search_term: str
+    search_field: str
+    search_index: str
+
+
+class ElasticSearchResponse(BaseModel):
+    docs: List[str]
+
+
 es_settings = ElasticApp()
