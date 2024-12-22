@@ -8,13 +8,33 @@ search = APIRouter(prefix="/search", tags=["Search"])
 @search.get("/wildcard")
 async def wildcard_search(request):
     async with ESHelpers(async_mode=True) as es:
-        resp = await.query_search()
+        query_ = {
+            "query":{
+                "wildcard":{
+                    request['field']:{
+                        "value": "*" + request['search_term'] + "*"
+                    }
+                }
+            }
+        }
+        resp = await es.query_search(query_=query_, search_index=request['_index'])
+        return resp
 
-    # resp = await  
 
 @search.get("/term")
 async def term_search(request):
-    pass
+    async with ESHelpers(async_mode=True) as es:
+        query_ = {
+            "query":{
+                "term":{
+                    request['field']:{
+                        "value": request['search_term']
+                    }
+                }
+            }
+        }
+        resp = await es.query_search(query_=query_, search_index=request['_index'])
+        return resp
 
 
 @search.get("vector_search")
