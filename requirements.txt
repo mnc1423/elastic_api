@@ -1,0 +1,10 @@
+uvicorn==0.24.0
+pydantic
+gunicorn==20.1.0
+pydantic-settings==2.2.1
+fastapi==0.115.3
+python-dotenv==0.21.0
+uvicorn[standard]
+python-multipart
+elasticsearch==8.14.0
+aiohttp
