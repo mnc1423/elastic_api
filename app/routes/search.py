@@ -2,7 +2,7 @@ import datetime
 from fastapi import APIRouter, status, HTTPException
 
 import app.services.search_services as searchServices
-from app.models.es_settings import ESHelpers
+from app.models.es_helpers import ESHelpers
 from app.models.models import ElasticSeachRequest, ElasticSearchResponse
 
 search = APIRouter(prefix="/search", tags=["Search"])
@@ -31,7 +31,7 @@ async def wildcard_search(request: ElasticSeachRequest):
 @search.get(
     "/term",
     response_model=ElasticSearchResponse,
-    status_code=status.HTTP_200_ok,
+    status_code=status.HTTP_200_OK,
 )
 async def term_search(request: ElasticSeachRequest):
     async with ESHelpers(async_mode=True) as es:
@@ -43,7 +43,7 @@ async def term_search(request: ElasticSeachRequest):
 
 
 @search.get(
-    "vector_search",
+    "/vector_search",
     response_model=ElasticSearchResponse,
     status_code=status.HTTP_200_OK,
 )
