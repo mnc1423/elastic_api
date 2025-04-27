@@ -9,6 +9,11 @@ DOTENV_PATH = os.environ.get(
 )
 
 
+class VectorDBRequest(BaseModel):
+    index_name: str = "test_index"
+    template_path: str = "app/template/vectorDB_template.json"
+
+
 class _ElasticConfig(BaseSettings):
     model_config = SettingsConfigDict(
         env_prefix="ELASTIC_",

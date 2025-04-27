@@ -1,0 +1,33 @@
+{
+    "settings": {
+      "number_of_shards": 1,
+      "number_of_replicas": 0
+    },
+    "mappings": {
+      "properties": {
+        "title": {
+          "type": "text"
+        },
+        "content": {
+          "type": "text"
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "author": {"type": "keyword"},
+            "created_at": {"type": "date"}
+          }
+        },
+        "raw_blob": {
+          "type": "keyword",
+          "index": false
+        },
+        "embedding": {
+          "type": "dense_vector",
+          "dims": 768,
+          "index": true,
+          "similarity": "cosine"
+        }
+      }
+    }
+  }
