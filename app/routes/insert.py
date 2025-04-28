@@ -1,7 +1,7 @@
 from fastapi import APIRouter, status, HTTPException
 import json
 from app.models.es_helpers import ESHelpers
-from app.models import VectorDBRequest
+from app.models.models import VectorDBRequest
 
 insert = APIRouter(prefix="/insert", tags=["insert"])
 
@@ -13,12 +13,10 @@ insert = APIRouter(prefix="/insert", tags=["insert"])
 async def insert_vectordb_template(request: VectorDBRequest):
     async with ESHelpers as es:
 
-        index_name = "test_index"
-
+        index_name = request.index_name
         # Load JSON file
-        with open("index_config.json", "r") as f:
+        with open(request.template_path, "r") as f:
             index_body = json.load(f)
-
         # Create the index
         if not es.indices.exists(index=index_name):
             es.indices.create(index=index_name, body=index_body)

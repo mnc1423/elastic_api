@@ -1,13 +1,18 @@
 ## Elastic REST API
 
-
-Build
+### Install and Deploy
 ```
+# If elasticsearch is installed
 docker compose build
+docker compose -f docker-compose.yaml up -d
 ```
 
-#### TODO
-- Add openAPI.yaml
-- Create Vector Search (KNN)
-- Create PyTest Code
-- Search results
+### Template file
+```
+/app/template/vectorDB_template.json
+
+# Create Template in Elasticsearch
+POST /insert/vectordb_template 
+
+```
+

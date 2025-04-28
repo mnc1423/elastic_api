@@ -11,7 +11,7 @@ services:
       - 5601:5601
     environment:
       - SERVERNAME=kibana
-      - ELASTICSEARCH_HOSTS=http://es01:9200
+      - ELASTICSEARCH_HOSTS={ELASTIC_HOST}
       - ELASTICSEARCH_USERNAME=kibana_system
       - ELASTICSEARCH_PASSWORD=${KIBANA_PASSWORD}
     networks:
