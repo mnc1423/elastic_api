@@ -1,0 +1,18 @@
+version: "3.9"
+services:
+  es_fastapi:
+    container_name: elastic_api
+    build: .
+    env_file: .env
+    command: python main.py
+    # command: uvicorn main:app
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app
+    networks:
+      - elastic 
+
+networks:
+  elastic:
+    external: true

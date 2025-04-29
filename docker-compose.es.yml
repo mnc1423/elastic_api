@@ -1,0 +1,27 @@
+version: "3.0"
+  
+services:
+  es01:
+    container_name: es01
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.14.3
+    # volumes:
+    #   - es-data:/usr/share/elasticsearch/data
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms2g -Xmx2g"
+      - "network.host:0.0.0.0"
+      - xpack.security.http.ssl.enabled=false
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+networks:
+  elastic:
+    external: true
+# volumes:
+#   es-data:
+#     driver: local
+#     driver_opts:
+#       o: bind
+#       type: none
+#       device: /mnt/sda/es-data
