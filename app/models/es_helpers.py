@@ -5,12 +5,20 @@ from elasticsearch import (
     ConflictError,
 )
 from app.models.models import es_settings
+from contextlib import AbstractAsyncContextManager
 
 
-class ESHelpers:
+class ESHelpers(AbstractAsyncContextManager):
     def __init__(self, async_mode: bool = False):
         self.es_client = None
         self.async_mode = async_mode
+
+    def __getattr__(self, name):
+        return getattr(self.es_client, name)
+
+    @property
+    def indices(self):
+        return self.es_client.indices
 
     async def __aenter__(self):
         if self.async_mode:
@@ -32,7 +40,7 @@ class ESHelpers:
 
     async def _connect_async(self):
         config = es_settings.es_config
-        if config.api_key == None:
+        if config.api_key is None:
             es_client = AsyncElasticsearch(
                 [config.host],
                 basic_auth=(config.user, config.password),
@@ -57,7 +65,7 @@ class ESHelpers:
         return [doc for doc in resp["hits"]["hits"]]
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        if self.es_client:  # Safeguard in case __aenter__ failed
+        if self.es_client:
             if self.async_mode:
                 await self.es_client.close()
             else:

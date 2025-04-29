@@ -6,10 +6,12 @@ from fastapi import (
 from app.models.es_helpers import ESHelpers
 import datetime
 from app.routes.search import search
+from app.routes.insert import insert
 
 app = FastAPI()
 
 app.include_router(search)
+app.include_router(insert)
 
 
 def build_search_args(json_data):

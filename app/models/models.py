@@ -4,9 +4,10 @@ from typing import List, Dict, Optional, Any
 from pydantic import BaseModel, Field
 import datetime
 
-DOTENV_PATH = os.environ.get(
-    "DOTENV_PATH", os.path.join(os.path.dirname(__file__), ".env")
+PROJECT_ROOT = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "..", "..")
 )
+DOTENV_PATH = os.environ.get("DOTENV_PATH", os.path.join(PROJECT_ROOT, ".env"))
 
 
 class VectorDBRequest(BaseModel):
