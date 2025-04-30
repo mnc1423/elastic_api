@@ -3,6 +3,7 @@ import json
 from app.models.es_helpers import ESHelpers
 from app.models.models import VectorDBRequest
 
+
 insert = APIRouter(prefix="/insert", tags=["Insert"])
 
 
@@ -22,3 +23,21 @@ async def insert_vectordb_template(request: VectorDBRequest):
             return f"Index '{index_name}' created from JSON file!"
         else:
             return f"Index '{index_name}' already exists."
+
+
+@insert.get(
+    "/get_collections",
+    status_code=status.HTTP_200_OK,
+)
+async def get_index_List():
+    async with ESHelpers(async_mode=True) as es:
+        indices = await es.cat.indices(format="json")
+
+        index_name = [
+            {"name": i["index"]} for i in indices if not i["index"].startswith(".")
+        ]
+    for idx in index_name:
+        mapping = await es.indices.get_mapping(index=idx["name"])
+        props = mapping[idx["name"]]["mappings"].get("properties", {})
+        idx["mapping"] = {k: v.get("type", "object") for k, v in props.items()}
+    return index_name
