@@ -41,3 +41,73 @@ async def get_index_List():
         props = mapping[idx["name"]]["mappings"].get("properties", {})
         idx["mapping"] = {k: v.get("type", "object") for k, v in props.items()}
     return index_name
+
+
+@insert.post(
+    "/data/list",
+    status_code=status.HTTP_200_OK,
+)
+async def insert_data_list(data: list):
+    """
+    Input format:
+    {
+        "id": id,
+        "index": Elastic Index,
+        "doc": document data
+    }
+    """
+    async with ESHelpers(async_mode=True) as es:
+        bulk_payload = []
+
+        for item in data:
+            action = {
+                "_op_type": "create",
+                "_index": item["index"],
+                "_source": item["doc"],
+            }
+
+            if item["id"]:
+                action["index"]["_id"] = item["id"]
+
+            bulk_payload.append(action)
+
+        response = await es.bulk(body=bulk_payload)
+
+        errors = [
+            item for item in response.get("items", []) if "error" in item["index"]
+        ]
+
+        return {"inserted": len(data), "errors": errors if errors else None}
+
+
+@insert.post(
+    "/data",
+    status_code=status.HTTP_200_OK,
+)
+async def insert_data_list(data: dict):
+    """
+    Input format:
+    {
+        "id": id,
+        "index": Elastic Index,
+        "doc": document data
+    }
+    """
+    async with ESHelpers(async_mode=True) as es:
+
+        action = {
+            "_op_type": "create",
+            "_index": data["index"],
+            "_source": data["doc"],
+        }
+
+        if data["id"]:
+            action["index"]["_id"] = data["id"]
+
+        response = await es.insert(body=action["doc"], id=action["_id"])
+
+        errors = [
+            item for item in response.get("items", []) if "error" in item["index"]
+        ]
+
+        return {"inserted": len(data), "errors": errors if errors else None}
