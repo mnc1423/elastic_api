@@ -95,19 +95,13 @@ async def insert_data_list(data: dict):
     """
     async with ESHelpers(async_mode=True) as es:
 
-        action = {
-            "_op_type": "create",
-            "_index": data["index"],
-            "_source": data["doc"],
-        }
+        index_name = data["index"]
+        document = data["doc"]
+        doc_id = data.get("id")
 
-        if data["id"]:
-            action["index"]["_id"] = data["id"]
+        if doc_id:
+            response = await es.index(index=index_name, id=doc_id, document=document)
+        else:
+            response = await es.index(index=index_name, document=document)
 
-        response = await es.insert(body=action["doc"], id=action["_id"])
-
-        errors = [
-            item for item in response.get("items", []) if "error" in item["index"]
-        ]
-
-        return {"inserted": len(data), "errors": errors if errors else None}
+        return response
